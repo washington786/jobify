@@ -1,5 +1,4 @@
-import { trusted } from "mongoose";
-import { ERROR, LOGIN_ERROR, LOGIN_SUCCESS, LOGIN_USER, REGISTER_USER, SUCCESS } from "../actions";
+import { ERROR, LOGIN_ERROR, LOGIN_SUCCESS, LOGIN_USER, LOGOUT_USER, REGISTER_USER, SUCCESS } from "../actions";
 
 export function errorReducer(state, action) {
   if (action.type === "SHOW_ERROR") {
@@ -74,6 +73,14 @@ export function errorReducer(state, action) {
       errorType: 'danger',
       errorMessage: action.payload.message,
       isLoading: false
+    }
+  }
+
+  if(action.type===LOGOUT_USER){
+    return {
+      ...state,
+      user: null,
+      token: null,
     }
   }
   return state;

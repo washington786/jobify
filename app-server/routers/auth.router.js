@@ -20,11 +20,13 @@ authRouter.post("/login", async function (req, res, next) {
     }
 
     const token = signInJWT(user._id);
+    user.password = undefined;
 
     res.status(200).json({
       status: "success",
       message: "Successfully logged in to your account. ",
       token: token,
+      user,
     });
   } catch (error) {
     return res.status(500).json({
@@ -71,8 +73,36 @@ authRouter.post("/register", async function (req, res, next) {
     });
   }
 });
-authRouter.patch("/update/:id", function (req, res, next) {
-  res.send("update screen");
+authRouter.patch("/update/:id", async function (req, res, next) {
+  const { id } = req.params;
+  try {
+    const user = await User.findById(id).select('+password');
+    if (!user) {
+      return res
+      .status(500)
+      .json({
+        status: "failed",
+        message: "Sorry, there was an error. please try again later.",
+      });
+    }
+    const {firstName,lastName,email} = req.body;
+
+    user.firstName = firstName;
+    user.lastName = lastName;
+    user.email = email;
+
+    await user.save();
+    
+    res.status(200).json({status:"success",message:"User updated successfully.", user});
+
+  } catch (error) {
+    return res
+      .status(500)
+      .json({
+        status: "failed",
+        message: "Sorry, there was an error. please try again later.",
+      });
+  }
 });
 
 module.exports = authRouter;

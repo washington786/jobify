@@ -80,11 +80,10 @@ const Register = () => {
   };
 
   // redirecting user if no error
-  console.log(user);
   useEffect(() => {
     if (user) {
       setTimeout(() => {
-        navigation("/dashboard");
+        navigation("/dashboard/home");
       },5000);
     }
   }, [user, navigation]);

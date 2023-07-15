@@ -32,3 +32,22 @@ in client package.json
 
 //install morgan
 app.use(morgan('dev'))
+
+//created protected routes
+//install react icons
+npm i react-icons
+
+//axios
+
+//job model
+jobType:{
+    enum:['full-time','part-time','remote','internship','learnership','in-service'],
+    default:'full-time'
+},
+createdBy:{
+    ref:'User',
+    type: mongoose.Types.ObjectId
+},
+{
+    timestamps:true
+}

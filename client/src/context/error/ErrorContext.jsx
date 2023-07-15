@@ -5,6 +5,7 @@ import {
   LOGIN_ERROR,
   LOGIN_SUCCESS,
   LOGIN_USER,
+  LOGOUT_USER,
   REGISTER_USER,
   SUCCESS,
 } from "../actions";
@@ -20,8 +21,8 @@ const initial = {
   showError: false,
   errorType: "",
   errorMessage: "",
-  user: user? JSON.parse(user):null,
-  token: token|| null,
+  user: user ? JSON.parse(user) : null,
+  token: token || null,
 };
 
 // persist user into local storage
@@ -58,7 +59,7 @@ const ErrorProvider = ({ children }) => {
       console.log(response);
       const { user, token } = response.data;
 
-      addUserToLocalStorage({ user, token })
+      addUserToLocalStorage({ user, token });
 
       dispatch({
         type: SUCCESS,
@@ -88,8 +89,11 @@ const ErrorProvider = ({ children }) => {
         "http://localhost:9090/auth/login",
         currentUser
       );
-      const { token, message } = response.data;
-      dispatch({ type: LOGIN_SUCCESS, payload: { token, message } });
+      const { token, message, user } = response.data;
+
+      dispatch({ type: LOGIN_SUCCESS, payload: { token, message, user } });
+
+      addUserToLocalStorage({ user, token });
     } catch (error) {
       dispatch({
         type: LOGIN_ERROR,
@@ -103,7 +107,19 @@ const ErrorProvider = ({ children }) => {
     }
   }
 
-  const values = { state, displayError, clearError, registerUser, loginUser };
+  function logoutUser() {
+    dispatch({ type: LOGOUT_USER });
+    removeUserInLocalStorage();
+  }
+
+  const values = {
+    state,
+    displayError,
+    clearError,
+    registerUser,
+    loginUser,
+    logoutUser,
+  };
   return (
     <errorContext.Provider value={values}>{children}</errorContext.Provider>
   );

@@ -15,11 +15,11 @@ import {
 
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { AuthWrapper } from "../components/AuthWrapper";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useErrorContext } from "../context/error/ErrorContext";
 import AlertComponent from "../components/Alert.component";
 
@@ -27,8 +27,9 @@ const Login = () => {
   const defaultTheme = createTheme();
 
   // context
-  const { state, clearError, displayError } = useErrorContext();
-  const { showError, errorType, errorMessage } = state;
+  const { state, clearError, displayError,loginUser } = useErrorContext();
+  const { showError, errorType, errorMessage, user, isLoading } =
+    state;
 
   //   input declaration variables
   const [email, setEmail] = useState<String>("");
@@ -48,12 +49,12 @@ const Login = () => {
   };
 
   // handle input blur events
-  const onInputBlur = ():void => {
+  const onInputBlur = (): void => {
     clearError();
   };
 
   //   storing input data into user object
-  const user: Object = {
+  const _user: Object = {
     email: email,
     password: password,
     rememberMe: rememberMe,
@@ -69,8 +70,19 @@ const Login = () => {
     } else {
       clearError();
     }
-    console.log(user);
+    loginUser(_user);
   };
+
+  // if user exists: redirect to dashboard screen
+  const navigation = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      setTimeout(() => {
+        navigation("/dashboard/home");
+      }, 3000);
+    }
+  }, [user, navigation]);
 
   return (
     <AuthWrapper>
@@ -143,6 +155,7 @@ const Login = () => {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
                 color="success"
+                disabled={isLoading}
               >
                 Sign In
               </Button>

@@ -6,6 +6,13 @@ import ErrPage from "../screens/404Page";
 import AuthOutlet from "../screens/AuthOutlet";
 import { ResetPassword } from "../screens/ResetPassword";
 import Dashboard from "../screens/Dashboard";
+import CreateJob from "../screens/main/createJob";
+import AllJobs from "../screens/main/AllJobs";
+import Stats from "../screens/main/Stats";
+import Profile from "../screens/main/Profile";
+import { ProtectedRoute } from "../components/ProtectedRoute";
+import { Index } from "../screens/main/Index";
+
 
 const RouterComponent = () => {
   return (
@@ -16,9 +23,22 @@ const RouterComponent = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/reset" element={<ResetPassword />} />
       </Route>
-      
-      <Route path="/dashboard" element={<Dashboard/>} />
-      
+
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      >
+        <Route path="home" index element={<Index />} />
+        <Route path="all-jobs" element={<AllJobs />} />
+        <Route path="add-job" element={<CreateJob />} />
+        <Route path="stats" element={<Stats />} />
+        <Route path="profile" element={<Profile />} />
+      </Route>
+
       <Route path="*" element={<ErrPage />} />
     </Routes>
   );

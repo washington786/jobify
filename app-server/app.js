@@ -7,6 +7,7 @@ const cors = require("cors");
 const dbConnection = require("./utils/connect-mongoose.util");
 const authRouter = require("./routers/auth.router");
 const jobsRouter = require("./routers/jobs.router");
+const auth = require("./middlwares/authentication.middle");
 
 const app = express();
 
@@ -26,7 +27,7 @@ app.get("/", function (req, res, next) {
 
 // authorization and authentication routes
 app.use('/auth',authRouter)
-app.use('/jobs',jobsRouter)
+app.use('/jobs',auth,jobsRouter)
 
 // routes for not found pages and error:
 // app.use(errorRouter);
